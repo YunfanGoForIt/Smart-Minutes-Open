@@ -83,7 +83,7 @@ graph TD
     A[🧠 主线程 / 调度者<br/>维护 skill 版本 · 决定迭代保留] --> B[📝 纪要生成 Agent]
     A --> C[🔍 质量把关 Agent]
     B --> D[文字稿 + 当前 skill<br/>→ 生成纪要<br/>❌ 不知道答案<br/>❌ 不知道分数<br/>❌ 不知道改进建议]
-    C --> E[原版纪要 + 生成版 + 文字稿<br/>→ 8维度打分<br/>→ 提出"skill 改哪条规则"]
+    C --> E["原版纪要 + 生成版 + 文字稿<br/>→ 8维度打分<br/>→ 提出'skill 改哪条规则'"]
     E --> A
     A --> F[整合建议 → 修改 skill<br/>→ v{N+1} 候选]
     F --> G{🎯 验证: 分数升?}
@@ -216,8 +216,8 @@ MIT © 作者（详见 [LICENSE](LICENSE)）
 
 **觉得有用？点个 ⭐ 支持一下！**
 
-<a href="https://github.com/YOUR_USERNAME/Smart-Minutes-Open">
-  <img src="https://img.shields.io/github/stars/YOUR_USERNAME/Smart-Minutes-Open?style=social" alt="star">
+<a href="https://github.com/YunfanGoForIt/Smart-Minutes-Open">
+  <img src="https://img.shields.io/github/stars/YunfanGoForIt/Smart-Minutes-Open?style=social" alt="star">
 </a>
 
 </div>
@@ -226,6 +226,6 @@ MIT © 作者（详见 [LICENSE](LICENSE)）
 
 ## ⭐ Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=YOUR_USERNAME/Smart-Minutes-Open&type=Date)](https://star-history.com/#YOUR_USERNAME/Smart-Minutes-Open&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=YunfanGoForIt/Smart-Minutes-Open&type=Date)](https://star-history.com/#YunfanGoForIt/Smart-Minutes-Open&Date)
 
 > ⚠️ 替换 `YOUR_USERNAME` 为你的实际 GitHub 用户名， shields 和 star history 图才会正确显示。
