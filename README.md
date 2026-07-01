@@ -227,5 +227,3 @@ MIT © 作者（详见 [LICENSE](LICENSE)）
 ## ⭐ Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=YunfanGoForIt/Smart-Minutes-Open&type=Date)](https://star-history.com/#YunfanGoForIt/Smart-Minutes-Open&Date)
-
-> ⚠️ 替换 `YOUR_USERNAME` 为你的实际 GitHub 用户名， shields 和 star history 图才会正确显示。
