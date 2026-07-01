@@ -1,139 +1,158 @@
-# Feishu-Minutes-Open
+<div align="center">
 
-> 飞书智能纪要复刻（Feishu Smart Minutes Replica）
+<!-- ════════════════════════════════════════════════════════════ -->
+<!--  Banner Hero 区域                                            -->
+<!-- ════════════════════════════════════════════════════════════ -->
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+<img src="banner.png" alt="Smart-Minutes-Open Banner" width="100%">
 
-一个Skill，把会议/通话 ASR 文字稿生成为与飞书「智能纪要」同等风格的完整文档——**画板速览 + 要点梳理 + 待办/智能章节/关键决策/金句时刻/相关链接**，可选回写为飞书知识库子文档。
+<br/>
 
-无需飞书 AI 会员。只需一篇文字稿。
+**无需飞书 AI 会员，把会议文字稿变成飞书「智能纪要」级专业文档。**
+
+<!-- 多语言链接 -->
+[📖 English](./README.md) · [📖 中文](./README.zh.md) · [🚀 Quick Start](./SETUP.md)
+
+<!-- Shields 多行布局 -->
+<p>
+  <a href="https://github.com/YOUR_USERNAME/Smart-Minutes-Open/stargazers">
+    <img src="https://img.shields.io/github/stars/YOUR_USERNAME/Smart-Minutes-Open?style=flat-square&logo=github&color=FFD700&label=Stars" alt="stars">
+  </a>
+  <a href="https://github.com/YOUR_USERNAME/Smart-Minutes-Open/network/members">
+    <img src="https://img.shields.io/github/forks/YOUR_USERNAME/Smart-Minutes-Open?style=flat-square&logo=github&color=00B96B&label=Forks" alt="forks">
+  </a>
+  <a href="https://github.com/YOUR_USERNAME/Smart-Minutes-Open/issues">
+    <img src="https://img.shields.io/github/issues/YOUR_USERNAME/Smart-Minutes-Open?style=flat-square&logo=github&color=FF6B6B&label=Issues" alt="issues">
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-00B96B?style=flat-square&logo=open-source-initiative&logoColor=white" alt="license">
+  </a>
+</p>
+<p>
+  <img src="https://img.shields.io/badge/Claude%20Code-Skill-8A2BE2?style=flat-square&logo=anthropic&logoColor=white" alt="claude-code">
+  <img src="https://img.shields.io/badge/飞书-lark--cli-3370FF?style=flat-square&logo=lark&logoColor=white" alt="lark">
+  <img src="https://img.shields.io/badge/status-active-00B96B?style=flat-square" alt="status">
+  <img src="https://img.shields.io/badge/PRs-welcome-00B96B?style=flat-square" alt="prs">
+</p>
+
+<p>
+  <em>"告别文档焦虑，让信息一目了然"</em><br/>
+  <em>"Stop reading. Start understanding."</em>
+</p>
+
+</div>
 
 ---
 
-## 这个 Skill 是怎么炼成的（核心方法论）
+## 🌟 一句话介绍
 
-这个 skill 不是手写出来的，而是**蒸馏**出来的——用一套类似机器学习训练流程的方法，让模型自己 Loop 迭代优化 skill 规则，直到生成质量逼近飞书原版。理解这套方法论，是理解为什么这个 skill 能做到接近原版质量的关键。
+> **Smart-Minutes-Open** 是一个 Claude Code Skill，将会议/通话 ASR 文字稿生成为与飞书「智能纪要」同等风格的完整文档：
+> **画板速览 + 要点梳理 + 待办/智能章节/关键决策/金句时刻/相关链接**，可选回写为飞书知识库子文档。
+>
+> **无需飞书 AI 会员。只需一篇文字稿。**
 
-### 核心架构：两个上下文隔离的子 Agent
+---
 
-整个蒸馏过程由**两个子 Agent** 协作完成，它们的**上下文被严格隔离**，各司其职：
+## 🏆 效果：用"机器学习训练"的思路写 Skill
 
+> [!IMPORTANT]
+> 这个 Skill 不是手写出来的，而是**蒸馏**出来的——用一套类似 ML 训练流程的方法，让模型自己 Loop 迭代优化，直到生成质量逼近飞书原版。
+
+我们用 **13 轮迭代 + 双 Agent 隔离打分** 的方法论，把飞书原版纪要作为"标准答案"，像训练模型一样把规则逐步优化。分数不会说谎：
+
+### 📊 评分演进
+
+| 指标 | 分数 | 可视化 |
+|------|------|--------|
+| 初始版本 | 74 | ████████░░░░░░░░░░ 37% |
+| 第 3 轮 | 78 | █████████░░░░░░░░░ 39% |
+| 第 6 轮 | 86 | ██████████░░░░░░░░ 43% |
+| 第 8 轮 | 88 | ██████████▌░░░░░░░ 44% |
+| **训练集最终** | **86-88** | **██████████▌░░░░░░░ 44%** |
+| **测试集（未参与改进）** | **~85.8** | **██████████▍░░░░░░░ 43%** |
+| **验证集（盲测）** | **81** | **█████████▌░░░░░░░░ 41%** |
+
+> 🎯 **测试集 85.8 + 验证集 81** — 证明没有过拟合，真实场景可用。
+
+---
+
+## 🧠 核心方法论：双 Agent 隔离 + 分数驱动
+
+```mermaid
+graph TD
+    A[🧠 主线程 / 调度者<br/>维护 skill 版本 · 决定迭代保留] --> B[📝 纪要生成 Agent]
+    A --> C[🔍 质量把关 Agent]
+    B --> D[文字稿 + 当前 skill<br/>→ 生成纪要<br/>❌ 不知道答案<br/>❌ 不知道分数<br/>❌ 不知道改进建议]
+    C --> E[原版纪要 + 生成版 + 文字稿<br/>→ 8维度打分<br/>→ 提出"skill 改哪条规则"]
+    E --> A
+    A --> F[整合建议 → 修改 skill<br/>→ v{N+1} 候选]
+    F --> G{🎯 验证: 分数升?}
+    G -->|✅ 是| H[保留为新版本]
+    G -->|❌ 否| I[放弃，回退 v{N}]
 ```
-                ┌─────────────────────────────────┐
-                │         主线程（调度者）          │
-                │  · 维护 skill 版本                │
-                │  · 决定迭代是否保留                │
-                │  · 不参与生成、不参与打分          │
-                └────────────┬────────────────────┘
-                             │
-                ┌────────────┴────────────┐
-                ▼                         ▼
-   ┌──────────────────────┐    ┌──────────────────────┐
-   │   纪要生成 Agent       │    │   质量把关 Agent       │
-   │                      │    │                      │
-   │  上下文只有：          │    │  上下文同时有：        │
-   │  · 文字稿             │    │  · 飞书原版纪要（答案） │
-   │  · 当前版本 skill     │    │  · 生成版纪要         │
-   │                      │    │  · 文字稿            │
-   │  职责：按 skill 生成  │    │                      │
-   │  不知道答案、不知道    │    │  职责：逐维度打分     │
-   │  上轮分数、不知道改进  │    │  + 提出可操作改进方向  │
-   │  建议                 │    │                      │
-   └──────────────────────┘    └──────────────────────┘
-```
 
-**为什么要隔离？** 防止"对着答案做题"。如果生成 Agent 能看到飞书原版纪要或上一轮的改进建议，它就会直接抄答案、迎合评分，而不是真正内化规则。隔离后，生成 Agent 只能靠 skill 本身的规则去生成，质量提升只能来自 skill 规则的改进——这样分数上升才真实反映 skill 在变好，而不是 Agent 在"作弊"。
-
-- **生成 Agent** 像一个只看考纲的学生：每次只拿到文字稿 + 当前 skill，独立完成一份纪要。
-- **把关 Agent** 像一个拿着标准答案的阅卷人：对比原版与生成版，按 8 个维度逐项打分，并给出"skill 应该改哪条规则、改成什么"的可操作建议。
-- **主线程** 像教研组：整合把关 Agent 的建议，修改 skill 产出候选新版本，用分数决定是否保留。
+> [!TIP]
+> **为什么要隔离？** 防止"对着答案做题"。如果生成 Agent 能看到飞书原版纪要或上一轮的改进建议，它就会直接抄答案、迎合评分，而不是真正内化规则。隔离后，分数上升才真实反映 skill 在变好。
 
 ### 类机器学习的数据划分
 
-借鉴机器学习的思路，把 15 篇带飞书原版纪要的真实会议文字稿划分为三个集合，再加 2 篇只有文字稿、没有原版的盲测样本：
-
 | 集合 | 数量 | 用途 | 类比 |
-|---|---|---|---|
-| **训练集** | 11 篇 | 每轮选 1 篇做"改进样本"——生成、打分、改 skill、验证 | 训练集 |
-| **测试集** | 4 篇 | 每 ~3 轮做一次全量打分，观察 skill 在**没参与改进的样本**上是否也变好，防止过拟合 | 测试集 |
-| **验证集** | 2 篇 | 仅有文字稿、无原版，最终版做独立盲测，模拟真实使用场景 | 验证集 |
+|------|------|------|------|
+| **训练集** | 11 篇 | 每轮选 1 篇做"改进样本" | 训练集 |
+| **测试集** | 4 篇 | 每 ~3 轮全量打分，防止过拟合 | 测试集 |
+| **验证集** | 2 篇 | 无原版，最终盲测，模拟真实场景 | 验证集 |
 
-**关键防泄漏设计**：测试集虽然迭代中参与打分，但**绝不参与"对着答案做题"**——生成 Agent 始终拿不到任何原版纪要。测试集的作用是"泛化探针"：如果训练集分数涨但测试集分数不涨，说明 skill 过拟合到训练样本的特定特征，改进无效，必须回退。
+### 关键突破（分数驱动下被逼出来的）
 
-### 分数驱动的迭代循环
+1. **会议性质先分流** — 讲座类细切（每 3-5 分钟一章）、讨论类按大主题合并、圆桌类按嘉宾成章
+2. **画板从文字 grid 升级为 DSL JSON + 渲染自检** — 真正可渲染的飞书画板
+3. **占位符规范化 + 防幻觉** — 飞书链接子域名用占位符禁造假域名、术语不确定时保留音译
+4. **关键决策分主次 + 分享类建议性决策** — 1 条主决策完整三要素 + N 条其他简列
 
-每一轮迭代严格按以下流程走，**以分数为唯一去留标准**：
-
-```
-   ┌──────────────────────────────────────────────────┐
-   │  1. 从训练集轮选 1 篇作为本轮改进样本              │
-   │     （轮换保证每篇都被覆盖到）                     │
-   │                                                    │
-   │  2. 生成 Agent 用【当前版本 skill】生成该篇纪要     │
-   │     → 写入 runs/v{N}/{token}/智能纪要.md           │
-   │                                                    │
-   │  3. 质量把关 Agent 对比飞书原版，8 维度打分         │
-   │     + 提出"skill 改哪条规则"的可操作建议            │
-   │                                                    │
-   │  4. 主线程整合建议 → 修改 skill → 产出 v{N+1} 候选  │
-   │                                                    │
-   │  5. 用同一篇 + 另一篇训练样本验证候选 skill：       │
-   │     · 分数升 → 保留为新版本 ✓                      │
-   │     · 分数降 → 放弃，回退到 v{N} ✗                 │
-   │                                                    │
-   │  6. 每 ~3 轮在测试集(4篇)全量打分，看泛化效果       │
-   └──────────────────────────────────────────────────┘
-                        ↓
-              重复 10+ 轮，直到收敛
-```
-
-**8 个评分维度**（每项 0-100，加权求总分）：画板 20% / 要点梳理 20% / 智能章节 15% / 关键决策 15% / 待办 10% / 格式还原度 10% / 忠实度与幻觉 5% / 金句时刻 5%。
-
-**版本管理**：每个版本保留全部 17 篇生成纪要于 `runs/v{N}/`，可横向比较版本演进。分数下降则放弃改动、回退版本，保证 skill 单调不退化。
-
-### 实际迭代成果
-
-这套方法跑了 13 轮有效迭代，评分演进：
-
-- 训练集：74 → 78 → 86 → 88 → 86 → 88（从 74 提升到 86-88 区间，+12~14 分）
-- 测试集（未参与改进）：均分约 85.8，证明泛化能力强
-- 验证集（无原版盲测）：81 分，质量良好偏上
-
-**几个关键突破点**（都是分数驱动下被逼出来的）：
-
-1. **会议性质先分流**——讲座/教学类细切（每 3-5 分钟一章）、讨论/闲聊类按大主题合并、分享/圆桌类按嘉宾成章。这是最大突破，因为发现两类会议的章节粒度走向完全相反，硬规则无法统一，必须按类型分流。
-2. **画板从文字描述升级为 DSL JSON + 渲染自检**——不再用文字 grid 冒充画板，而是生成真正的画板 DSL、渲染 PNG 自检、写入飞书画板，实现开头真正可渲染的画板速览。
-3. **占位符规范化 + 防幻觉**——所有飞书链接子域名用占位符禁造假域名、术语还原不确定时保留音译、分值与比例严格区分、说话人身份只在自己声明或被当面指认时才挂名。
-4. **关键决策分主次 + 分享类建议性决策**——1 条主决策完整三要素 + N 条其他决策简列；分享类会议中分享者的核心方法论也算"建议性决策"用三要素呈现，不一律判"无决策"。
-
-> 这套方法论本身（双 Agent 隔离 + 类 ML 数据划分 + 分数驱动迭代）是可复用的——换一个领域（比如复刻某种文档生成功能），只要能拿到"原版答案 + 输入样本"，就能用同样的流程蒸馏出对应的 skill。
+> [!NOTE]
+> 这套方法论本身（双 Agent 隔离 + 类 ML 数据划分 + 分数驱动迭代）是**可复用**的——换一个领域，只要能拿到"原版答案 + 输入样本"，就能用同样的流程蒸馏出对应的 skill。
 
 ---
 
-## 快速开始
+## 🚀 快速开始
 
-1. **安装前置依赖**：`npm install -g @larksuite/cli`，然后 `lark-cli config init` 完成认证（详见 `lark-shared` 技能）。
-2. **安装本 skill**：把本目录放到 Claude Code 的 `~/.claude/skills/feishu-minutes-open/` 下。
-3. **（可选）初始化回写根目录**：按 [`SETUP.md`](SETUP.md) 在飞书知识库建一个根目录文档并写入本地配置。
-4. **准备文字稿**：用 `lark-cli minutes +detail --minute-tokens <token> --transcript` 提取妙记文字稿。
-5. **在 Claude Code 中触发**：把文字稿路径发给 Claude，说"生成智能纪要"即可。
+```bash
+# 1. 安装飞书 CLI
+npm install -g @larksuite/cli
+lark-cli config init
 
-## 输入 / 输出
+# 2. 安装本 skill
+# 把本目录放到 Claude Code 的 ~/.claude/skills/smart-minutes-open/ 下
+
+# 3. 提取文字稿
+lark-cli minutes +detail --minute-tokens <token> --transcript
+
+# 4. 触发生成
+# 在 Claude Code 中把文字稿路径发过去，说"生成智能纪要"即可
+```
+
+📖 详细初始化步骤见 [`SETUP.md`](SETUP.md)
+
+---
+
+## 📦 输入 / 输出
 
 | 输入 | 输出 |
-|---|---|
+|------|------|
 | 一篇 ASR 文字稿（`transcript.txt`，含发言人区分与时间戳） | `智能纪要.md` — 完整纪要文档 |
-| | `画板.json` + `画板.png` — 开头可视化画板 |
-| 可选：妙记 token + minutes 子域名 | 飞书知识库子文档（需回写模式） |
+| 可选：妙记 token + minutes 子域名 | `画板.json` + `画板.png` — 开头可视化画板 |
+| 可选：回写配置（知识库父节点） | 飞书知识库子文档（需回写模式） |
 
-## 文件结构
+---
+
+## 📂 项目结构
 
 ```
-Feishu-Minutes-Open/
-├─ SKILL.md                          ← skill 入口（快速决策 + 执行步骤）
-├─ SETUP.md                          ← 首次使用初始化引导
-├─ README.md                         ← 本文件（含蒸馏方法论）
-├─ references/                       ← 详细规范（按需读取，避免 SKILL.md 过长）
+Smart-Minutes-Open/
+├─ SKILL.md                          ← 入口：快速决策 + 执行步骤
+├─ SETUP.md                          ← 首次初始化引导
+├─ README.md                         ← 本文件（项目总览 + 蒸馏方法论）
+├─ references/                       ← 详细规范（按需读取，渐进式加载）
 │  ├─ output-structure.md            ← 输出文档总体结构
 │  ├─ whiteboard.md                  ← 画板 — DSL JSON / 渲染 / 写入
 │  ├─ summary-notes.md               ← 要点梳理 — grid 多列结构化
@@ -145,27 +164,68 @@ Feishu-Minutes-Open/
 │  ├─ quality-checklist.md           ← 全局质量要求 + 自检清单
 │  └─ writeback.md                   ← 回写到飞书知识库
 └─ scripts/
-   └─ build_writeback.py             ← 生成产物 → 飞书回写 markdown 转换脚本
+   └─ build_writeback.py             ← 生成产物 → 飞书回写 markdown 转换
 ```
 
-## 设计理念
+> 💡 **渐进式加载**（Progressive Disclosure）：`SKILL.md` 保持精简（~75 行），各章节规范拆分到 10 份独立文档。模型生成某章节时只需读对应 reference，不必一次加载全部规范——既省上下文，又便于单独维护。
 
-### 渐进式加载（Progressive Disclosure）
+---
 
-`SKILL.md` 保持精简（~75 行），只含入口概览 + 执行步骤 + 快速决策表。各章节的详细规范拆分到 `references/` 下的 10 份独立文档中。模型生成某个章节时只需读对应 reference，不必一次加载全部规范——既省上下文，又便于单独维护。
+## 📐 8 维度评分体系
 
-### 依赖声明
+| 维度 | 权重 | 说明 |
+|------|------|------|
+| 画板 | 20% | 可视化结构图质量 |
+| 要点梳理 | 20% | 多列结构化速览 |
+| 智能章节 | 15% | 分段逻辑与粒度 |
+| 关键决策 | 15% | 主次决策、三要素完整性 |
+| 待办 | 10% | 复选框 + cite 准确度 |
+| 格式还原度 | 10% | 与飞书原版风格一致性 |
+| 忠实度与幻觉 | 5% | 无虚构域名、无过度演绎 |
+| 金句时刻 | 5% | 关键语录捕获 |
+
+---
+
+## 🛠️ 依赖
 
 本 skill 依赖 [lark-cli](https://github.com/orgs/larksuite/packages) 及以下官方技能：
 
-- `lark-shared`（认证与权限）
-- `lark-whiteboard`（画板查询与编辑）
-- `lark-minutes`（妙记文字稿提取）
-- `lark-wiki`（知识库节点管理）
-- `lark-doc`（飞书文档编辑）
+| 技能 | 用途 |
+|------|------|
+| `lark-shared` | 认证与权限 |
+| `lark-whiteboard` | 画板查询与编辑 |
+| `lark-minutes` | 妙记文字稿提取 |
+| `lark-wiki` | 知识库节点管理 |
+| `lark-doc` | 飞书文档编辑 |
 
 不做内联复制，避免与官方技能内容重复、维护脱钩。
 
-## 许可
+---
 
-MIT
+## 🤝 贡献
+
+欢迎 Issue / PR！如果你有真实会议文字稿 + 飞书原版纪要，可以帮我们扩展数据集，进一步提升泛化能力。
+
+## 📄 许可
+
+MIT © 作者（详见 [LICENSE](LICENSE)）
+
+---
+
+<div align="center">
+
+**觉得有用？点个 ⭐ 支持一下！**
+
+<a href="https://github.com/YOUR_USERNAME/Smart-Minutes-Open">
+  <img src="https://img.shields.io/github/stars/YOUR_USERNAME/Smart-Minutes-Open?style=social" alt="star">
+</a>
+
+</div>
+
+<!-- Star History -->
+
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=YOUR_USERNAME/Smart-Minutes-Open&type=Date)](https://star-history.com/#YOUR_USERNAME/Smart-Minutes-Open&Date)
+
+> ⚠️ 替换 `YOUR_USERNAME` 为你的实际 GitHub 用户名， shields 和 star history 图才会正确显示。

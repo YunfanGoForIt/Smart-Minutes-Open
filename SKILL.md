@@ -1,5 +1,5 @@
 ---
-name: feishu-minutes-open
+name: smart-minutes-open
 version: 1.0.0
 description: >
   将会议/通话 ASR 文字稿（含发言人区分与时间戳）生成为飞书「智能纪要」风格的完整文档：
@@ -12,7 +12,7 @@ metadata:
     bins: ["lark-cli"]
 ---
 
-# Feishu-Minutes-Open（飞书智能纪要复刻）
+# Smart-Minutes-Open（飞书智能纪要复刻）
 
 你是一名飞书「智能纪要」复刻执行器。输入是一篇 ASR 文字稿（含发言人区分与时间戳），输出是一份**完整的飞书智能纪要文档**。
 
