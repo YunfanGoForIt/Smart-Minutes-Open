@@ -53,7 +53,80 @@
 
 ---
 
-## 🏆 效果：用"机器学习训练"的思路写 Skill
+## 🚀 快速开始
+
+```bash
+# 1. 安装飞书 CLI
+npm install -g @larksuite/cli
+lark-cli config init
+
+# 2. 安装本 skill
+# 把本目录放到 Claude Code 的 ~/.claude/skills/smart-minutes-open/ 下
+
+# 3. 提取文字稿
+lark-cli minutes +detail --minute-tokens <token> --transcript
+
+# 4. 触发生成
+# 在 Claude Code 中把文字稿路径发过去，说"生成智能纪要"即可
+```
+
+📖 详细初始化步骤见 [`SETUP.md`](SETUP.md)
+
+---
+
+## 📦 输入 / 输出
+
+| 输入 | 输出 |
+|------|------|
+| 一篇 ASR 文字稿（`transcript.txt`，含发言人区分与时间戳） | `智能纪要.md` — 完整纪要文档 |
+| 可选：妙记 token + minutes 子域名 | `画板.json` + `画板.png` — 开头可视化画板 |
+| 可选：回写配置（知识库父节点） | 飞书知识库子文档（需回写模式） |
+
+---
+
+## 📂 项目结构
+
+```
+Smart-Minutes-Open/
+├─ SKILL.md                          ← 入口：快速决策 + 执行步骤
+├─ SETUP.md                          ← 首次初始化引导
+├─ README.md                         ← 本文件（项目总览 + 蒸馏方法论）
+├─ references/                       ← 详细规范（按需读取，渐进式加载）
+│  ├─ output-structure.md            ← 输出文档总体结构
+│  ├─ whiteboard.md                  ← 画板 — DSL JSON / 渲染 / 写入
+│  ├─ summary-notes.md               ← 要点梳理 — grid 多列结构化
+│  ├─ todos.md                       ← 待办 — 复选框 + cite
+│  ├─ smart-chapters.md              ← 智能章节 — 时间戳分段
+│  ├─ key-decisions.md               ← 关键决策 — 三要素 / 主次
+│  ├─ golden-quotes.md               ← 金句时刻
+│  ├─ related-links.md               ← 相关链接
+│  ├─ quality-checklist.md           ← 全局质量要求 + 自检清单
+│  └─ writeback.md                   ← 回写到飞书知识库
+└─ scripts/
+   └─ build_writeback.py             ← 生成产物 → 飞书回写 markdown 转换
+```
+
+> 💡 **渐进式加载**（Progressive Disclosure）：`SKILL.md` 保持精简（~75 行），各章节规范拆分到 10 份独立文档。模型生成某章节时只需读对应 reference，不必一次加载全部规范——既省上下文，又便于单独维护。
+
+---
+
+## 🛠️ 依赖
+
+本 skill 依赖 [lark-cli](https://github.com/orgs/larksuite/packages) 及以下官方技能：
+
+| 技能 | 用途 |
+|------|------|
+| `lark-shared` | 认证与权限 |
+| `lark-whiteboard` | 画板查询与编辑 |
+| `lark-minutes` | 妙记文字稿提取 |
+| `lark-wiki` | 知识库节点管理 |
+| `lark-doc` | 飞书文档编辑 |
+
+不做内联复制，避免与官方技能内容重复、维护脱钩。
+
+---
+
+## 🏆 这个 Skill 是怎么炼成的：用"机器学习训练"的思路写 Skill
 
 > [!IMPORTANT]
 > 这个 Skill 不是手写出来的，而是**蒸馏**出来的——用一套类似 ML 训练流程的方法，让模型自己 Loop 迭代优化，直到生成质量逼近飞书原版。
@@ -114,63 +187,6 @@ graph TD
 
 ---
 
-## 🚀 快速开始
-
-```bash
-# 1. 安装飞书 CLI
-npm install -g @larksuite/cli
-lark-cli config init
-
-# 2. 安装本 skill
-# 把本目录放到 Claude Code 的 ~/.claude/skills/smart-minutes-open/ 下
-
-# 3. 提取文字稿
-lark-cli minutes +detail --minute-tokens <token> --transcript
-
-# 4. 触发生成
-# 在 Claude Code 中把文字稿路径发过去，说"生成智能纪要"即可
-```
-
-📖 详细初始化步骤见 [`SETUP.md`](SETUP.md)
-
----
-
-## 📦 输入 / 输出
-
-| 输入 | 输出 |
-|------|------|
-| 一篇 ASR 文字稿（`transcript.txt`，含发言人区分与时间戳） | `智能纪要.md` — 完整纪要文档 |
-| 可选：妙记 token + minutes 子域名 | `画板.json` + `画板.png` — 开头可视化画板 |
-| 可选：回写配置（知识库父节点） | 飞书知识库子文档（需回写模式） |
-
----
-
-## 📂 项目结构
-
-```
-Smart-Minutes-Open/
-├─ SKILL.md                          ← 入口：快速决策 + 执行步骤
-├─ SETUP.md                          ← 首次初始化引导
-├─ README.md                         ← 本文件（项目总览 + 蒸馏方法论）
-├─ references/                       ← 详细规范（按需读取，渐进式加载）
-│  ├─ output-structure.md            ← 输出文档总体结构
-│  ├─ whiteboard.md                  ← 画板 — DSL JSON / 渲染 / 写入
-│  ├─ summary-notes.md               ← 要点梳理 — grid 多列结构化
-│  ├─ todos.md                       ← 待办 — 复选框 + cite
-│  ├─ smart-chapters.md              ← 智能章节 — 时间戳分段
-│  ├─ key-decisions.md               ← 关键决策 — 三要素 / 主次
-│  ├─ golden-quotes.md               ← 金句时刻
-│  ├─ related-links.md               ← 相关链接
-│  ├─ quality-checklist.md           ← 全局质量要求 + 自检清单
-│  └─ writeback.md                   ← 回写到飞书知识库
-└─ scripts/
-   └─ build_writeback.py             ← 生成产物 → 飞书回写 markdown 转换
-```
-
-> 💡 **渐进式加载**（Progressive Disclosure）：`SKILL.md` 保持精简（~75 行），各章节规范拆分到 10 份独立文档。模型生成某章节时只需读对应 reference，不必一次加载全部规范——既省上下文，又便于单独维护。
-
----
-
 ## 📐 8 维度评分体系
 
 | 维度 | 权重 | 说明 |
@@ -183,22 +199,6 @@ Smart-Minutes-Open/
 | 格式还原度 | 10% | 与飞书原版风格一致性 |
 | 忠实度与幻觉 | 5% | 无虚构域名、无过度演绎 |
 | 金句时刻 | 5% | 关键语录捕获 |
-
----
-
-## 🛠️ 依赖
-
-本 skill 依赖 [lark-cli](https://github.com/orgs/larksuite/packages) 及以下官方技能：
-
-| 技能 | 用途 |
-|------|------|
-| `lark-shared` | 认证与权限 |
-| `lark-whiteboard` | 画板查询与编辑 |
-| `lark-minutes` | 妙记文字稿提取 |
-| `lark-wiki` | 知识库节点管理 |
-| `lark-doc` | 飞书文档编辑 |
-
-不做内联复制，避免与官方技能内容重复、维护脱钩。
 
 ---
 
