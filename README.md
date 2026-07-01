@@ -56,19 +56,20 @@
 ## 🚀 快速开始
 
 ```bash
-# 1. 安装飞书 CLI
+# 1. 安装飞书 CLI（回写飞书知识库时才需要，仅生成本地纪要可跳过）
 npm install -g @larksuite/cli
 lark-cli config init
 
 # 2. 安装本 skill
 # 把本目录放到 Claude Code 的 ~/.claude/skills/smart-minutes-open/ 下
 
-# 3. 提取文字稿
-lark-cli minutes +detail --minute-tokens <token> --transcript
-
-# 4. 触发生成
-# 在 Claude Code 中把文字稿路径发过去，说"生成智能纪要"即可
+# 3. 把文字稿喂给 Claude Code，触发生成：
+#    · 文字稿在飞书上 → 直接把飞书妙记/文档链接发给 Claude Code
+#    · 文字稿在本地   → 直接把本地文件路径发给 Claude Code
+# 然后说"生成智能纪要"即可
 ```
+
+> 不用关心怎么把文字稿"提取"出来——文字稿在哪就把那个链接/路径丢给 Claude Code，它会自己读取。
 
 📖 详细初始化步骤见 [`SETUP.md`](SETUP.md)
 
@@ -85,14 +86,9 @@ lark-cli minutes +detail --minute-tokens <token> --transcript
 - **免费用户**：每月 **300 分钟**免费转写额度（含会议录制、录音、本地文件上传、云文件导入四个场景），每月 1 号自动恢复。
 - **飞书 AI 会员用户**：即使「智能纪要」额度用完了，**录音转文字的 300 分钟额度仍可继续使用**——这恰好是这个 Skill 存在的意义：用飞书录音转写拿到文字稿，再由本 Skill 生成智能纪要，**绕开智能纪要的额度限制**。
 
-操作：在飞书桌面端或移动端进入「妙记」→ 点 **录音** 或 **上传音视频文件** → 转写完成后，用 `lark-cli` 提取文字稿：
+操作：在飞书桌面端或移动端进入「妙记」→ 点 **录音** 或 **上传音视频文件** → 转写完成后，**直接把这条妙记的飞书链接发给 Claude Code**，说"生成智能纪要"即可——无需手动提取文字稿。
 
-```bash
-lark-cli minutes +detail --minute-tokens <妙记token> --transcript
-# → 默认输出到 ./minutes/<token>/transcript.txt，含发言人区分与时间戳
-```
-
-> 飞书妙记的转写结果格式与本 Skill 期望的输入格式天然对齐（`发言人 时间戳\n正文`），无需任何加工。
+> 飞书妙记的转写结果格式与本 Skill 期望的输入格式天然对齐（`发言人 时间戳\n正文`），Claude Code 会自己读取链接里的内容。
 
 ### 方案 B：用通义听悟（额度更大，不在飞书生态内的用户）
 
