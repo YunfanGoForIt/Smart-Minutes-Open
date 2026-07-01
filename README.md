@@ -15,14 +15,14 @@
 
 <!-- Shields 多行布局 -->
 <p>
-  <a href="https://github.com/YOUR_USERNAME/Smart-Minutes-Open/stargazers">
-    <img src="https://img.shields.io/github/stars/YOUR_USERNAME/Smart-Minutes-Open?style=flat-square&logo=github&color=FFD700&label=Stars" alt="stars">
+  <a href="https://github.com/YunfanGoForIt/Smart-Minutes-Open/stargazers">
+    <img src="https://img.shields.io/github/stars/YunfanGoForIt/Smart-Minutes-Open?style=flat-square&logo=github&color=FFD700&label=Stars" alt="stars">
   </a>
-  <a href="https://github.com/YOUR_USERNAME/Smart-Minutes-Open/network/members">
-    <img src="https://img.shields.io/github/forks/YOUR_USERNAME/Smart-Minutes-Open?style=flat-square&logo=github&color=00B96B&label=Forks" alt="forks">
+  <a href="https://github.com/YunfanGoForIt/Smart-Minutes-Open/network/members">
+    <img src="https://img.shields.io/github/forks/YunfanGoForIt/Smart-Minutes-Open?style=flat-square&logo=github&color=00B96B&label=Forks" alt="forks">
   </a>
-  <a href="https://github.com/YOUR_USERNAME/Smart-Minutes-Open/issues">
-    <img src="https://img.shields.io/github/issues/YOUR_USERNAME/Smart-Minutes-Open?style=flat-square&logo=github&color=FF6B6B&label=Issues" alt="issues">
+  <a href="https://github.com/YunfanGoForIt/Smart-Minutes-Open/issues">
+    <img src="https://img.shields.io/github/issues/YunfanGoForIt/Smart-Minutes-Open?style=flat-square&logo=github&color=FF6B6B&label=Issues" alt="issues">
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-00B96B?style=flat-square&logo=open-source-initiative&logoColor=white" alt="license">
@@ -36,8 +36,8 @@
 </p>
 
 <p>
-  <em>"告别文档焦虑，让信息一目了然"</em><br/>
-  <em>"Stop reading. Start understanding."</em>
+  <em>"飞书 AI 会员太贵额度太少，我蒸馏了一个平替。"</em><br/>
+  <em>"Feishu's AI plan is pricey and quota-tight — so I distilled an open replacement."</em>
 </p>
 
 </div>
