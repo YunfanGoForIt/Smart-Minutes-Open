@@ -1,3 +1,6 @@
+# macOS
+.DS_Store
+
 # 本地配置（含飞书知识库 wiki token，不提交）
 .feishu-minutes-config.json
 
